@@ -1,0 +1,3 @@
+The binary equivalent of 15 is 0000000000001111
+The binary equivalent of 16 is 0000000000010000
+The binary equivalent of 38 is 0000000000100110
