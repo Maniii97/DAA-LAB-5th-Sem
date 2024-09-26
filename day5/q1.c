@@ -1,48 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct {
     int item_id;
     double item_profit;
     double item_weight;
-    double profit_weight_ratio;
 } ITEM;
 
-void swap(ITEM* a, ITEM* b) {
-    ITEM temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void heapify(ITEM arr[], int n, int i) {
-    int smallest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
-
-    if (left < n && arr[left].profit_weight_ratio < arr[smallest].profit_weight_ratio)
-        smallest = left;
-
-    if (right < n && arr[right].profit_weight_ratio < arr[smallest].profit_weight_ratio)
-        smallest = right;
-
-    if (smallest != i) {
-        swap(&arr[i], &arr[smallest]);
-        heapify(arr, n, smallest);
-    }
-}
-
-void heapSort(ITEM arr[], int n) {
-    for (int i = n / 2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
-
-    for (int i = n - 1; i >= 0; i--) {
-        swap(&arr[0], &arr[i]);
-        heapify(arr, i, 0);
-    }
-}
-void printHeap(ITEM arr[], int n) {
-    for (int i = 0; i < n; i++)
-        printf("%d %lf %lf %lf\n", arr[i].item_id, arr[i].item_profit, arr[i].item_weight, arr[i].profit_weight_ratio);
+int comp(const void* a, const void* b) {
+    ITEM* itemA = (ITEM*)a;
+    ITEM* itemB = (ITEM*)b;
+    double r1 = itemA->item_profit / itemA->item_weight;
+    double r2 = itemB->item_profit / itemB->item_weight;
+    if (r1 < r2) return 1;
+    if (r1 > r2) return -1;
+    return 0;
 }
 
 int main() {
@@ -52,22 +25,23 @@ int main() {
     printf("Enter the number of items: ");
     scanf("%d", &n);
 
-    ITEM* items = (ITEM*)malloc(n * sizeof(ITEM));
+    ITEM items[n];
 
     for (int i = 0; i < n; i++) {
         printf("Enter the profit and weight of item no %d: ", i + 1);
         scanf("%lf %lf", &items[i].item_profit, &items[i].item_weight);
         items[i].item_id = i + 1;
-        items[i].profit_weight_ratio = items[i].item_profit / items[i].item_weight;
     }
 
     printf("Enter the capacity of knapsack: ");
     scanf("%lf", &capacity);
 
-    heapSort(items, n);
-
+    qsort(items, n, sizeof(ITEM), comp);
     printf("\nItems sorted by profit/weight ratio:\n");
-    printHeap(items, n);
+
+    for(int i=0;i<n;i++){
+        printf("Item %d: Profit: %lf, Weight: %lf\n",items[i].item_id,items[i].item_profit,items[i].item_weight);
+    }
 
     double total_profit = 0.0;
     double remaining_capacity = capacity;

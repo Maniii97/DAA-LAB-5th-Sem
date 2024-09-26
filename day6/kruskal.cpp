@@ -1,5 +1,10 @@
 #include <bits/stdc++.h>
-using namespace std;
+using std::vector;
+using std::ifstream;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::sort;
 
 class DisjointSet{
 private : vector<int> parent, size;
@@ -28,6 +33,9 @@ public :
             parent[pv] = pu;
             size[pu] += size[pv];
         }
+    }
+    bool hasSameParent(int u, int v){
+        return findParent(u) == findParent(v);
     }
 };
 
@@ -59,7 +67,7 @@ int main(){
         int u = edge[1];
         int v = edge[2];
 
-        if(unionFind.findParent(u) != unionFind.findParent(v)){
+        if(!unionFind.hasSameParent(u,v)){
             unionFind.unionBySize(u,v);
             mstEdges.push_back({u,v,wt});
             mstWeight += wt;
